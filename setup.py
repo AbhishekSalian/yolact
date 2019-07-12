@@ -17,13 +17,15 @@ def packages_from_pipfile(section):
 
     result = []
     for k, v in parser[section].items():
-        pkg = k if v == '"*"' else '{}=={}'.format(k, v)
+        v = eval(v)
+        pkg = k if v == '*' else (k + v)
         result.append(pkg)
     return result
 
 
 with get_path('README.md').open() as f:
     readme = f.read()
+
 
 setup(
     name='yolact',
