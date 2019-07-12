@@ -12,7 +12,6 @@ from layers import Detect
 from layers.interpolate import InterpolateModule
 from backbone import construct_backbone
 
-import torch.backends.cudnn as cudnn
 from utils import timer
 from utils.functions import MovingAverage
 
@@ -623,6 +622,7 @@ class Yolact(nn.Module):
 
 # Some testing code
 if __name__ == '__main__':
+    import torch.backends.cudnn as cudnn
     from utils.functions import init_console
     init_console()
 
