@@ -7,13 +7,13 @@ from itertools import product
 from math import sqrt
 from typing import List
 
-from data.config import cfg, mask_type
-from layers import Detect
-from layers.interpolate import InterpolateModule
-from backbone import construct_backbone
+from .data.config import cfg, mask_type
+from .layers import Detect
+from .layers.interpolate import InterpolateModule
+from .backbone import construct_backbone
 
-from utils import timer
-from utils.functions import MovingAverage
+from .utils import timer
+from .utils.functions import MovingAverage
 
 # This is required for Pytorch 1.0.1 on Windows to initialize Cuda on some driver versions.
 # See the bug report here: https://github.com/pytorch/pytorch/issues/17108
