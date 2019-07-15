@@ -1,9 +1,9 @@
-from data import *
-from utils.augmentations import SSDAugmentation, BaseTransform
-from utils.functions import MovingAverage, SavePath
-from utils import timer
-from layers.modules import MultiBoxLoss
-from yolact import Yolact
+from .data import *
+from .utils.augmentations import SSDAugmentation, BaseTransform
+from .utils.functions import MovingAverage, SavePath
+from .utils import timer
+from .layers.modules import MultiBoxLoss
+from .yolact import Yolact
 import os
 import sys
 import time
@@ -21,7 +21,7 @@ import argparse
 import datetime
 
 # Oof
-import eval as eval_script
+from  . import eval as eval_script
 
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
