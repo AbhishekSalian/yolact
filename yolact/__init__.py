@@ -1,1 +1,1 @@
-from . import backbone, data, layers, utils, web, yolact, train, eval
+from . import backbone, data, layers, utils, web, yolact, eval

@@ -26,62 +26,7 @@ from  . import eval as eval_script
 def str2bool(v):
     return v.lower() in ("yes", "true", "t", "1")
 
-
-parser = argparse.ArgumentParser(
-    description='Yolact Training Script')
-parser.add_argument('--batch_size', default=8, type=int,
-                    help='Batch size for training')
-parser.add_argument('--resume', default=None, type=str,
-                    help='Checkpoint state_dict file to resume training from. If this is "interrupt"'\
-                         ', the model will resume training from the interrupt file.')
-parser.add_argument('--start_iter', default=0, type=int,
-                    help='Resume training at this iter. If this is -1, the iteration will be'\
-                         'determined from the file name.')
-parser.add_argument('--num_workers', default=4, type=int,
-                    help='Number of workers used in dataloading')
-parser.add_argument('--cuda', default=True, type=str2bool,
-                    help='Use CUDA to train model')
-parser.add_argument('--lr', '--learning_rate', default=None, type=float,
-                    help='Initial learning rate. Leave as None to read this from the config.')
-parser.add_argument('--momentum', default=None, type=float,
-                    help='Momentum for SGD. Leave as None to read this from the config.')
-parser.add_argument('--decay', '--weight_decay', default=None, type=float,
-                    help='Weight decay for SGD. Leave as None to read this from the config.')
-parser.add_argument('--gamma', default=None, type=float,
-                    help='For each lr step, what to multiply the lr by. Leave as None to read this from the config.')
-parser.add_argument('--save_folder', default='weights/',
-                    help='Directory for saving checkpoint models')
-parser.add_argument('--config', default=None,
-                    help='The config object to use.')
-parser.add_argument('--save_interval', default=10000, type=int,
-                    help='The number of iterations between saving the model.')
-parser.add_argument('--validation_size', default=5000, type=int,
-                    help='The number of images to use for validation.')
-parser.add_argument('--validation_epoch', default=2, type=int,
-                    help='Output validation information every n iterations. If -1, do no validation.')
-parser.add_argument('--keep_latest', dest='keep_latest', action='store_true',
-                    help='Only keep the latest checkpoint instead of each one.')
-parser.add_argument('--keep_latest_interval', default=100000, type=int,
-                    help='When --keep_latest is on, don\'t delete the latest file at these intervals. This should be a multiple of save_interval or 0.')
-parser.add_argument('--dataset', default=None, type=str,
-                    help='If specified, override the dataset specified in the config with this one (example: coco2017_dataset).')
-
-parser.set_defaults(keep_latest=False)
-args = parser.parse_args()
-
-if args.config is not None:
-    set_cfg(args.config)
-
-if args.dataset is not None:
-    set_dataset(args.dataset)
-
-# Update training parameters from the config if necessary
-def replace(name):
-    if getattr(args, name) == None: setattr(args, name, getattr(cfg, name))
-replace('lr')
-replace('decay')
-replace('gamma')
-replace('momentum')
+args = None
 
 loss_types = ['B', 'C', 'M', 'P', 'D', 'E', 'S']
 
@@ -379,4 +324,63 @@ def setup_eval():
     eval_script.parse_args(['--no_bar', '--max_images='+str(args.validation_size)])
 
 if __name__ == '__main__':
+    global args
+    
+    parser = argparse.ArgumentParser(
+        description='Yolact Training Script')
+    parser.add_argument('--batch_size', default=8, type=int,
+                        help='Batch size for training')
+    parser.add_argument('--resume', default=None, type=str,
+                        help='Checkpoint state_dict file to resume training from. If this is "interrupt"'\
+                             ', the model will resume training from the interrupt file.')
+    parser.add_argument('--start_iter', default=0, type=int,
+                        help='Resume training at this iter. If this is -1, the iteration will be'\
+                             'determined from the file name.')
+    parser.add_argument('--num_workers', default=4, type=int,
+                        help='Number of workers used in dataloading')
+    parser.add_argument('--cuda', default=True, type=str2bool,
+                        help='Use CUDA to train model')
+    parser.add_argument('--lr', '--learning_rate', default=None, type=float,
+                        help='Initial learning rate. Leave as None to read this from the config.')
+    parser.add_argument('--momentum', default=None, type=float,
+                        help='Momentum for SGD. Leave as None to read this from the config.')
+    parser.add_argument('--decay', '--weight_decay', default=None, type=float,
+                        help='Weight decay for SGD. Leave as None to read this from the config.')
+    parser.add_argument('--gamma', default=None, type=float,
+                        help='For each lr step, what to multiply the lr by. Leave as None to read this from the config.')
+    parser.add_argument('--save_folder', default='weights/',
+                        help='Directory for saving checkpoint models')
+    parser.add_argument('--config', default=None,
+                        help='The config object to use.')
+    parser.add_argument('--save_interval', default=10000, type=int,
+                        help='The number of iterations between saving the model.')
+    parser.add_argument('--validation_size', default=5000, type=int,
+                        help='The number of images to use for validation.')
+    parser.add_argument('--validation_epoch', default=2, type=int,
+                        help='Output validation information every n iterations. If -1, do no validation.')
+    parser.add_argument('--keep_latest', dest='keep_latest', action='store_true',
+                        help='Only keep the latest checkpoint instead of each one.')
+    parser.add_argument('--keep_latest_interval', default=100000, type=int,
+                        help='When --keep_latest is on, don\'t delete the latest file at these intervals. This should be a multiple of save_interval or 0.')
+    parser.add_argument('--dataset', default=None, type=str,
+                        help='If specified, override the dataset specified in the config with this one (example: coco2017_dataset).')
+    
+    parser.set_defaults(keep_latest=False)
+    args = parser.parse_args()
+
+
+    if args.config is not None:
+        set_cfg(args.config)
+    
+    if args.dataset is not None:
+        set_dataset(args.dataset)
+    
+    # Update training parameters from the config if necessary
+    def replace(name):
+        if getattr(args, name) == None: setattr(args, name, getattr(cfg, name))
+    replace('lr')
+    replace('decay')
+    replace('gamma')
+    replace('momentum')
+
     train()
